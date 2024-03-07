@@ -27,10 +27,10 @@ If you have a real-time listening application that works with Webhooks, paste th
 If you would like email notifications upon purchases, place the receiving address here.
 
 ### Target Platform:
-Choose TradeStation
+Choose NinjaTrader
 
-### TradeStation customer number:
-Enter your TradeStation customer number which can be found in the 'Help | About TradeStation' section.  This is used to create your master key license for integration testing on your copy of TradeStation.
+### NinjaTrader Username
+Enter your NinjaTrader Username. This value will be embedded into the license so that you can check it at runtime whenever you access our DLL.
 
 ### SKU:
 Unique self-created product identifier that you will use in your script while accessing the DLL.
