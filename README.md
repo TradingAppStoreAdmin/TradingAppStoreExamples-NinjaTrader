@@ -3,7 +3,41 @@
 TradingApp.Store offers a comprehensive software suite enabling vendors to verify user permissions for their products. The suite comprises digitally signed Dynamic Link Libraries (DLLs) containing API functions accessible via NinjaTrader scripts integrated into your software.
 
 ## Setup
-Go to vendors.tradingapp.store, create a vendor account, and click the "Create Listing" button at the top right. Fill out a product SKU (this will identify your testing product on our servers), target platform (NinjaTrader), and an optional username that will be embedded into the license. This is useful if you'd like to offload machine authorization to a third party, like if you have your own username/password login system that you'd like to use. If no username, put "none". After filling out the details, click "Generate MSI" and proceed to install the downloaded MSI file. You can then launch the TradingApp.Store license manager application to see the generated license.  
+Go to vendors.tradingapp.store, create a vendor account, and click the 'Create Listing' button at the top right. Proceed to fill out the Product Listing form.  Instructions below.
+
+### Product Name:
+Fill out a Product Name at the top left and a SKU will be automatically produced at the bottom of the page (this will identify your product on our servers). 
+
+### Product Description:
+Fill out a product description that fully explains your product, its benefits, and how it works.  Give as much detail as possible.  
+
+### Listing Types:
+Check all that apply to this product.  Your product may fit into more than one Listing Type.  
+
+### Subscription Options:
+Choose the type of billing scheme to use. (Such as Lifetime, Annual, Monthly, Free Trial + Monthly, etc)
+
+### Upload Software Here:
+***Skip this step temporarily because you first need to integrate the TAS subscription verification DLL into your custom software by following the directions below.  This will be the final step below before deployment.*
+
+### Webhook Link:
+If you have a real-time listening application that works with Webhooks, paste the link to it here to be notified when a purchase for this product is made.
+
+### Purchase Email:
+If you would like email notifications upon purchases, place the receiving address here.
+
+### Target Platform:
+Choose TradeStation
+
+### TradeStation customer number:
+Enter your TradeStation customer number which can be found in the 'Help | About TradeStation' section.  This is used to create your master key license for integration testing on your copy of TradeStation.
+
+### SKU:
+Unique self-created product identifier that you will use in your script while accessing the DLL.
+
+### Download MSI:
+Press this to download a copy of the 'TradingApp.Store License Manager' that is master-keyed to this specific product and specifically to your TradeStation customer number.  This provides you, the Vendor, the ability to test the integrations of your products with our DLLs.  After installing this MSI, launch the TradingApp.Store license manager application to see the generated license.  
+
 
 ![TradingApp.Store License Manager](licensemanager_screenshot.png)  
 
@@ -50,6 +84,19 @@ The DLL will return various error values based on numerous factors. It is up to 
 8 - File Error
 9 - other error
 ```
+
+## Finishing Up
+Go back to the Vendor Portal to complete your product setup.
+
+### Sales Information - Set Price:
+This is the price per period for the subscription term of the product.  Revenue splits are explained in the Vendor Policy (https://tradingapp.store/pages/vendor-policy).
+
+### Upload Software Here:
+Once your product is successfully integrated into our permissions system, take the product out of debug mode (see bool debug above), and export your project.  If you have accompanying files, workspaces, symbol lists, etc, zip everything into one file, and then upload it here.  This is what will be distributed to end-users at the time of purchase or free trial.
+
+### Send for approval:
+Click here to send this listing for approval by TAS site moderators.  You will be notified by email upon acceptance or rejection.
+
 ## Other Notes
 If you are planning on using other apps sold from TradingApp.Store, you must first uninstall the vendor installation and delete the TradingAppStore folder located at C:/ProgramData/ . This will insure that there will be no conflict between the license generated whenever you buy a real product and the debug license used for testing.
 
