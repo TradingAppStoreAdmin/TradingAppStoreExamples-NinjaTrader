@@ -36,7 +36,7 @@ Enter your NinjaTrader Username. This value will be embedded into the license so
 Unique self-created product identifier that you will use in your script while accessing the DLL.
 
 ### Download MSI:
-Press this to download a copy of the 'TradingApp.Store License Manager' that is master-keyed to this specific product and specifically to your TradeStation customer number.  This provides you, the Vendor, the ability to test the integrations of your products with our DLLs.  After installing this MSI, launch the TradingApp.Store license manager application to see the generated license.  
+Press this to download a copy of the 'TradingApp.Store License Manager' that is master-keyed to this specific product and specifically to your NinjaTrader username.  This provides you, the Vendor, the ability to test the integrations of your products with our DLLs.  After installing this MSI, launch the TradingApp.Store license manager application to see the generated license.  
 
 
 ![TradingApp.Store License Manager](licensemanager_screenshot.png)  
@@ -98,7 +98,9 @@ Once your product is successfully integrated into our permissions system, take t
 Click here to send this listing for approval by TAS site moderators.  You will be notified by email upon acceptance or rejection.
 
 ## Other Notes
-If you are planning on using other apps sold from TradingApp.Store, you must first uninstall the vendor installation and delete the TradingAppStore folder located at C:/ProgramData/ . This will insure that there will be no conflict between the license generated whenever you buy a real product and the debug license used for testing.
+If you are planning on using other apps sold from TradingApp.Store as an end-user, you must first uninstall the vendor installation and delete the TradingAppStore folder located at C:/ProgramData/ .  
+This .bat will do that for you:  ![Delete TAS Folder Batch File](Delete_TAS_Folder.bat)
+This will ensure that there will be no conflict between the license generated whenever you buy a real product and the debug license used for testing.
 
 ## Further Help
 If you need assistance in implementation, you may email support@tradingapp.store and we will respond as quickly as possible.
