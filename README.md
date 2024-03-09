@@ -49,15 +49,15 @@ The TradingAppStore DLL also offers a hardware authorization option that only al
 You may download the installer for TradingAppStore from the vendor portal whenever you are in the process of creating a listing. All licenses created from the vendor portal are tagged with a “Debug” flag, so they will not have any functionality in release mode. Thus, BE SURE TO CHANGE THE DEBUG FLAG TO FALSE AFTER COMPLETION OF TESTING PHASES.
 
 ## Implementation
-After downloading and executing the MSI installer, navigate to C:\ProgramData\TradingAppStore\x64 . Copy the TASDotNet.dll file and paste it into your Documents\NinjaTrader\bin\custom folder. Then, in your NinjaScript file, add that newly added file in the bin\custom folder as a reference to your project by right clicking and selecting “references”.
+After downloading and executing the MSI installer, navigate to C:\ProgramData\TradingAppStore\x64 . Copy the TASDotNet.dll file and paste it into your Documents\NinjaTrader\bin\custom folder. Then, in your NinjaScript file, add that newly added file in the bin\custom folder as a reference to your project by right-clicking and selecting “references”.
 To access the DLL function, the following lines can be inserted into your software source files:
 ```C#
 using static UserPermission
 //…
 Print("Starting...");
 UserPermission p = new UserPermission();
-bool debug =  true, tasAuth = false;
-int error = p.GetPermission("NinjaTrader-" + "ACCOUNT-NAME" , "MY-PRODUCT-SKU", debug, tasAuth);
+bool debug =  true;
+int error = p.GetPlatformAuthorization("NinjaTrader-" + "ACCOUNT-NAME" , "MY-PRODUCT-SKU", debug);
 Print(error);
 ```
 
@@ -65,11 +65,10 @@ Please make sure that the end user knows to copy the TAS_DotNet DLL into the Doc
 
 
 ## DLL Inputs
-The DLL must have 4 input values:
+The DLL must have 3 input values:
 * string customerID :   username of the user
 * string productID :    SKU of the product to be checked.
 * bool debug :          set to True if you are testing to use Debug licenses distributed by the vendor portal. SET TO FALSE FOR RELEASE OR ELSE ANYONE WILL HAVE ACCESS TO YOUR PRODUCT
-* bool TASauth :        Enable this to use our system for user authorization via hardware identifiers. Otherwise, you can use another system like Username / Password
 
 ## DLL Return Values
 The DLL will return various error values based on numerous factors. It is up to your application how to handle them.
@@ -88,11 +87,11 @@ The DLL will return various error values based on numerous factors. It is up to 
 ## Finishing Up
 Go back to the Vendor Portal to complete your product setup.
 
-### Sales Information - Set Price:
-This is the price per period for the subscription term of the product.  Revenue splits are explained in the Vendor Policy (https://tradingapp.store/pages/vendor-policy).
-
 ### Upload Software Here:
 Once your product is successfully integrated into our permissions system, take the product out of debug mode (see bool debug above), and export your project.  If you have accompanying files, workspaces, symbol lists, etc, zip everything into one file, and then upload it here.  This is what will be distributed to end-users at the time of purchase or free trial.
+
+### Sales Information - Set Price:
+This is the price per period for the subscription term of the product.  Revenue splits are explained in the Vendor Policy (https://tradingapp.store/pages/vendor-policy).
 
 ### Send for approval:
 Click here to send this listing for approval by TAS site moderators.  You will be notified by email upon acceptance or rejection.
