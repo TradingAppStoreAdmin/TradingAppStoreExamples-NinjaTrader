@@ -88,8 +88,7 @@ The DLL will return various error values based on numerous factors. It is up to 
 Go back to the Vendor Portal to complete your product setup.
 
 ### Upload Software Here:
-Once your product is successfully integrated into our permissions system, take the product out of debug mode (see bool debug above), and export your project.  
-We recommend using NinjaTrader's Instructions here:  https://ninjatrader.com/support/helpGuides/nt8/NT%20HelpGuide%20English.html?distribution_procedure.htm
+Once your product is successfully integrated into our permissions system, take the product out of debug mode (see bool debug above), and export your project.  We recommend using NinjaTrader's Instructions here:  https://ninjatrader.com/support/helpGuides/nt8/NT%20HelpGuide%20English.html?distribution_procedure.htm
 If you have accompanying files, workspaces, symbol lists, etc, zip everything into one file, and then upload it here.  This is what will be distributed to end-users at the time of purchase or free trial.
 
 ### Sales Information - Set Price:
