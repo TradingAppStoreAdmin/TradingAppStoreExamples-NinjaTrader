@@ -49,19 +49,66 @@ The TradingAppStore DLL also offers a hardware authorization option that only al
 You may download the installer for TradingAppStore from the vendor portal whenever you are in the process of creating a listing. All licenses created from the vendor portal are tagged with a “Debug” flag, so they will not have any functionality in release mode. Thus, BE SURE TO CHANGE THE DEBUG FLAG TO FALSE AFTER COMPLETION OF TESTING PHASES.
 
 ## Implementation
-After downloading and executing the MSI installer, navigate to C:\ProgramData\TradingAppStore\x64 . Copy the TASDotNet.dll file and paste it into your Documents\NinjaTrader\bin\custom folder. Then, in your NinjaScript file, add that newly added file in the bin\custom folder as a reference to your project by right-clicking and selecting “references”.
+After downloading and executing the MSI installer, navigate to C:\ProgramData\TradingAppStore\x64 . Copy the TASDotNet.dll and Utils_DotNet.dll files and paste them into your Documents\NinjaTrader\bin\custom folder. Then, in your NinjaScript file, add those newly added files in the bin\custom folder as references to your project by right-clicking and selecting “references”.
 To access the DLL function, the following lines can be inserted into your software source files:
 ```C#
-using static UserPermission
-//…
 Print("Starting...");
+if (!VerifyDlls())
+{
+    return; // VERY IMPORTANT: Handle the case for if either verification fails. Do not use the library code! In this example, we simply return to terminate the program.
+}
+
 UserPermission p = new UserPermission();
-bool debug =  true;
-int error = p.GetPlatformAuthorization("NinjaTrader-" + "ACCOUNT-NAME" , "MY-PRODUCT-SKU", debug);
-Print(error);
+string productID = "INSERT_PRODUCT_SKU";
+bool debug = true; // VERY IMPORTANT: Only set this to true during testing. Actual implementation will have debug set to false.
+
+//Perform user authentication using TAS authorization
+int error_machine_auth = p.GetMachineAuthorization(productID, debug);
+Console.WriteLine("Returned Error: " + error_machine_auth);
+
+if (error_machine_auth == 0)
+{
+    Print("Access granted");
+}
+else
+{
+    Print("Access denied. Error: " + error_machine_auth.ToString());
+    return; // VERY IMPORTANT: Be sure to handle the case for when a user doesn't have access. In this example, we simply return to terminate the program.
+}
+
+private bool VerifyDlls()
+		{
+		    Utils utils = new Utils();
+		    
+		    string magicNumber = utils.ReceiveMagicNumber();
+		    Console.WriteLine(magicNumber);
+		    var jsonString = "{\"magic_number\" : \"" + magicNumber + "\"}";
+			Print(jsonString);
+		    using (var client = new HttpClient())
+		    {
+		        var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
+		        var response = client.PostAsync("https://tradingstoreapi.ngrok.app/verifyDLL", content).Result;
+		
+		        if (response.StatusCode == System.Net.HttpStatusCode.OK)
+		        {
+		            Print("DLL accepted");
+		            return true;
+		        }
+		        else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+		        {
+		            Print("DLL has been tampered with.");
+		            return false;
+		        }
+		        else
+		        {
+		            Print($"Error: {response.StatusCode}");
+		            return false;
+		        }
+		    }
+		}
 ```
 
-Please make sure that the end user knows to copy the TAS_DotNet DLL into the Documents\NinjaTrader\bin\custom folder as well or else your application will throw an error.
+Please make sure that the end user knows to copy the TAS_DotNet and Utils_DotNet DLLs into the Documents\NinjaTrader\bin\custom folder as well or else your application will throw an error.
 
 
 ## DLL Inputs
