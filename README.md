@@ -65,7 +65,6 @@ bool debug = true; // VERY IMPORTANT: Only set this to true during testing. Actu
 
 //Perform user authentication using TAS authorization
 int error_platform_auth = p.GetPlatformAuthorization(customerID, productID, debug);
-Console.WriteLine("Returned Error: " + error_platform_auth);
 
 if (error_platform_auth == 0)
 {
@@ -82,9 +81,9 @@ private bool VerifyDlls()
     Utils utils = new Utils();
     
     string magicNumber = utils.ReceiveMagicNumber();
-    Console.WriteLine(magicNumber);
+   
     var jsonString = "{\"magic_number\" : \"" + magicNumber + "\"}";
-	Print(jsonString);
+    Print(jsonString);
     using (var client = new HttpClient())
     {
 	var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
