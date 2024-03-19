@@ -60,19 +60,20 @@ if (!VerifyDlls())
 
 UserPermission p = new UserPermission();
 string productID = "INSERT_PRODUCT_SKU";
+string customerID = "NinjaTrader-" + "GET_CUSTOMER_USERNAME";
 bool debug = true; // VERY IMPORTANT: Only set this to true during testing. Actual implementation will have debug set to false.
 
 //Perform user authentication using TAS authorization
-int error_machine_auth = p.GetMachineAuthorization(productID, debug);
-Console.WriteLine("Returned Error: " + error_machine_auth);
+int error_platform_auth = p.GetPlatformAuthorization(customerID, productID, debug);
+Console.WriteLine("Returned Error: " + error_platform_auth);
 
-if (error_machine_auth == 0)
+if (error_platform_auth == 0)
 {
     Print("Access granted");
 }
 else
 {
-    Print("Access denied. Error: " + error_machine_auth.ToString());
+    Print("Access denied. Error: " + error_platform_auth.ToString());
     return; // VERY IMPORTANT: Be sure to handle the case for when a user doesn't have access. In this example, we simply return to terminate the program.
 }
 
