@@ -52,6 +52,11 @@ You may download the installer for TradingAppStore from the vendor portal whenev
 After downloading and executing the MSI installer, navigate to C:\ProgramData\TradingAppStore\x64 . Copy the TASDotNet.dll and Utils_DotNet.dll files and paste them into your Documents\NinjaTrader\bin\custom folder. Then, in your NinjaScript file, add those newly added files in the bin\custom folder as references to your project by right-clicking and selecting “references”.
 To access the DLL function, the following lines can be inserted into your software source files:
 ```C#
+using static Utils;
+using static UserPermission;
+using System.Text;
+using System.Net.Http;
+
 Print("Starting...");
 if (!VerifyDlls())
 {
