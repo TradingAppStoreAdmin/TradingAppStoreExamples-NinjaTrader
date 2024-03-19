@@ -58,6 +58,9 @@ using System.Text;
 using System.Net.Http;
 
 Print("Starting...");
+
+//Before you use the dlls, you should first make sure that they have not
+//  been tampered with.
 if (!VerifyDlls())
 {
     return; // VERY IMPORTANT: Handle the case for if either verification fails. Do not use the library code! In this example, we simply return to terminate the program.
@@ -84,11 +87,13 @@ else
 private bool VerifyDlls()
 {
     Utils utils = new Utils();
-    
+
+    //This gets a one-time-use magic number from a utility dll
     string magicNumber = utils.ReceiveMagicNumber();
-   
+
     var jsonString = "{\"magic_number\" : \"" + magicNumber + "\"}";
-    Print(jsonString);
+
+    //Now, let's send that magic number to our server to be verified
     using (var client = new HttpClient())
     {
 	var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
@@ -96,7 +101,7 @@ private bool VerifyDlls()
 
 	if (response.StatusCode == System.Net.HttpStatusCode.OK)
 	{
-	    Print("DLL accepted");
+	    Print("DLL accepted"); //After verifying the DLLs, you can safely use them to authorize your customers.
 	    return true;
 	}
 	else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
