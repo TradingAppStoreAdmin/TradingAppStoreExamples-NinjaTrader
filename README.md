@@ -77,35 +77,35 @@ else
 }
 
 private bool VerifyDlls()
+{
+    Utils utils = new Utils();
+    
+    string magicNumber = utils.ReceiveMagicNumber();
+    Console.WriteLine(magicNumber);
+    var jsonString = "{\"magic_number\" : \"" + magicNumber + "\"}";
+	Print(jsonString);
+    using (var client = new HttpClient())
+    {
+	var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
+	var response = client.PostAsync("https://tradingstoreapi.ngrok.app/verifyDLL", content).Result;
+
+	if (response.StatusCode == System.Net.HttpStatusCode.OK)
 	{
-	    Utils utils = new Utils();
-	    
-	    string magicNumber = utils.ReceiveMagicNumber();
-	    Console.WriteLine(magicNumber);
-	    var jsonString = "{\"magic_number\" : \"" + magicNumber + "\"}";
-		Print(jsonString);
-	    using (var client = new HttpClient())
-	    {
-		var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
-		var response = client.PostAsync("https://tradingstoreapi.ngrok.app/verifyDLL", content).Result;
-	
-		if (response.StatusCode == System.Net.HttpStatusCode.OK)
-		{
-		    Print("DLL accepted");
-		    return true;
-		}
-		else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-		{
-		    Print("DLL has been tampered with.");
-		    return false;
-		}
-		else
-		{
-		    Print($"Error: {response.StatusCode}");
-		    return false;
-		}
-	    }
+	    Print("DLL accepted");
+	    return true;
 	}
+	else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+	{
+	    Print("DLL has been tampered with.");
+	    return false;
+	}
+	else
+	{
+	    Print($"Error: {response.StatusCode}");
+	    return false;
+	}
+    }
+}
 ```
 
 Please make sure that the end user knows to copy the TAS_DotNet and Utils_DotNet DLLs into the Documents\NinjaTrader\bin\custom folder as well or else your application will throw an error.
