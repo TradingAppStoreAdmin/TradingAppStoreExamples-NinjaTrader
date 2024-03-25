@@ -124,7 +124,7 @@ Please make sure that the end user knows to copy the TAS_DotNet and Utils_DotNet
 ## DLL Inputs
 The DLL must have 3 input values:
 * string customerID :   username of the user
-* string productID :    SKU of the product to be checked.
+* string productID :    SKU of the product that was self generated above.
 * bool debug :          set to True if you are testing to use Debug licenses distributed by the vendor portal. SET TO FALSE FOR RELEASE OR ELSE ANYONE WILL HAVE ACCESS TO YOUR PRODUCT
 
 ## DLL Return Values
