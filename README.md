@@ -48,6 +48,12 @@ The DLL will automatically detect a license in the TradingAppStore/licenses fold
 The TradingAppStore DLL also offers a hardware authorization option that only allows a certain number of devices to access one instance of your product. This adds an additional layer of security by preventing copies of a DLL / product from gaining permission.
 You may download the installer for TradingAppStore from the vendor portal whenever you are in the process of creating a listing. All licenses created from the vendor portal are tagged with a “Debug” flag, so they will not have any functionality in release mode. Thus, BE SURE TO CHANGE THE DEBUG FLAG TO FALSE AFTER COMPLETION OF TESTING PHASES.
 
+## DLL Inputs
+The DLL must have 3 input values:
+* string customerID :   username of the user
+* string productID :    SKU of the product that was self generated above.
+* bool debug :          set to True if you are testing to use Debug licenses distributed by the vendor portal. SET TO FALSE FOR RELEASE OR ELSE ANYONE WILL HAVE ACCESS TO YOUR PRODUCT
+
 ## Implementation
 After downloading and executing the MSI installer, navigate to C:\ProgramData\TradingAppStore\x64 . Copy the TASDotNet.dll and Utils_DotNet.dll files and paste them into your Documents\NinjaTrader\bin\custom folder. Then, in your NinjaScript file, add those newly added files in the bin\custom folder as references to your project by right-clicking and selecting “references”.
 To access the DLL function, the following lines can be inserted into your software source files:
@@ -121,11 +127,7 @@ private bool VerifyDlls()
 Please make sure that the end user knows to copy the TAS_DotNet and Utils_DotNet DLLs into the Documents\NinjaTrader\bin\custom folder as well or else your application will throw an error.
 
 
-## DLL Inputs
-The DLL must have 3 input values:
-* string customerID :   username of the user
-* string productID :    SKU of the product that was self generated above.
-* bool debug :          set to True if you are testing to use Debug licenses distributed by the vendor portal. SET TO FALSE FOR RELEASE OR ELSE ANYONE WILL HAVE ACCESS TO YOUR PRODUCT
+
 
 ## DLL Return Values
 The DLL will return various error values based on numerous factors. It is up to your application how to handle them.
