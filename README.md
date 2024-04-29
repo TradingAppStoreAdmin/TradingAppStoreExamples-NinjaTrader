@@ -55,79 +55,111 @@ The DLL must have 3 input values:
 * bool debug :          set to True if you are testing to use Debug licenses distributed by the vendor portal. SET TO FALSE FOR RELEASE OR ELSE ANYONE WILL HAVE ACCESS TO YOUR PRODUCT
 
 ## Implementation
-After downloading and executing the MSI installer, navigate to C:\ProgramData\TradingAppStore\x64 . Copy the TASDotNet.dll and Utils_DotNet.dll files and paste them into your Documents\NinjaTrader\bin\custom folder. Then, in your NinjaScript file, add those newly added files in the bin\custom folder as references to your project by right-clicking and selecting “references”.
-To access the DLL function, the following lines can be inserted into your software source files:
+The following is an example implementation that halts the OnBarUpdate() event of an indicator in the case that the user does not have permission.
 ```C#
-using static Utils;
-using static UserPermission;
-using System.Text;
-using System.Net.Http;
+// these using statements support our dll import and assembly import logic
+using System.Reflection;
+using System.Runtime.InteropServices;
+// other using statements here...
 
-Print("Starting...");
-
-//Before you use the dlls, you should first make sure that they have not
-//  been tampered with.
-if (!VerifyDlls())
+namespace NinjaTrader.NinjaScript.Indicators
 {
-    return; // VERY IMPORTANT: Handle the case for if either verification fails. Do not use the library code! In this example, we simply return to terminate the program.
-}
-
-UserPermission p = new UserPermission();
-string productID = "INSERT_PRODUCT_SKU";
-string customerID = "NinjaTrader-" + "GET_CUSTOMER_USERNAME";
-bool debug = true; // VERY IMPORTANT: Only set this to true during testing. Actual implementation will have debug set to false.
-
-//Perform user authentication using TAS authorization
-int error_platform_auth = p.GetPlatformAuthorization(customerID, productID, debug);
-
-if (error_platform_auth == 0)
-{
-    Print("Access granted");
-}
-else
-{
-    Print("Access denied. Error: " + error_platform_auth.ToString());
-    return; // VERY IMPORTANT: Be sure to handle the case for when a user doesn't have access. In this example, we simply return to terminate the program.
-}
-
-private bool VerifyDlls()
-{
-    Utils utils = new Utils();
-
-    //This gets a one-time-use magic number from a utility dll
-    string magicNumber = utils.ReceiveMagicNumber();
-
-    var jsonString = "{\"magic_number\" : \"" + magicNumber + "\"}";
-
-    //Now, let's send that magic number to our server to be verified
-    using (var client = new HttpClient())
+    public class MyCustomIndicator1 : Indicator
     {
-	var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
-	var response = client.PostAsync("https://tradingstoreapi.ngrok.app/verifyDLL", content).Result;
+        protected override void OnStateChange()
+        {
+            // onStateChange logic...
+        }
+	
+        // Import our DLL for	
+	[DllImport("C:\\ProgramData\\TradingAppStore\\x64\\TASlicense.dll")]
+        static extern int UsePlatformAuthorization(string customerId, string productId, bool debug);
 
-	if (response.StatusCode == System.Net.HttpStatusCode.OK)
-	{
-	    Print("DLL accepted"); //After verifying the DLLs, you can safely use them to authorize your customers.
-	    return true;
-	}
-	else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-	{
-	    Print("DLL has been tampered with.");
-	    return false;
-	}
-	else
-	{
-	    Print($"Error: {response.StatusCode}");
-	    return false;
-	}
+        // whether we ran hasPermission() yet or not
+        private static bool ran = false;
+	// caching the result of hasPermission() after first run
+        private static bool verified = false;
+        private bool hasPermission()
+        {
+	    // if we already ran, return our cached result
+            if (ran)
+            {
+                return verified;
+            }
+            ran = true;
+
+            //Before you use the dlls, you should first make sure that they have not
+            //  been tampered with.
+	    if (!VerifyDlls())
+            {
+	        Print("DLLs denied");
+                return false; // VERY IMPORTANT: Handle the case for if either verification fails. Do not use the library code! In this example, we simply return to terminate the program.
+            }
+            
+            // set these to your product sku and the customer ninjatraderId respectively
+            string productID = "INSERT_PRODUCT_SKU";
+            string customerID = "NinjaTrader-" + "INSERT_CUSTOMER_ID";
+            bool debug = true; // VERY IMPORTANT: Only set this to true during testing. Actual implementation will have debug set to false.
+
+            //Perform user authentication using TAS authorization
+            int error_platform_auth = UsePlatformAuthorization(productID, productID, debug);
+
+            if (error_platform_auth == 0)
+            {
+                verified = true;
+                return true;
+            }
+            else
+            {
+                Print("Access denied. Error: " + error_platform_auth.ToString());
+                return false;
+            }
+        }
+		
+        private bool VerifyDlls()
+        {
+            //This gets a one-time-use magic number from a utility dll
+	    string magicNumber = (string)Assembly.LoadFrom(@"C:\ProgramData\TradingAppStore\x64\Utils_DotNet.dll").GetType("Utils").GetMethod("ReceiveMagicNumber", BindingFlags.Static | BindingFlags.Public, null, CallingConventions.Any, Type.EmptyTypes, null).Invoke(null, null).ToString();
+            var jsonString = "{\"magic_number\" : \"" + magicNumber + "\"}";
+            //Now, let's send that magic number to our server to be verified
+            using (var client = new HttpClient())
+            {
+                var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
+                var response = client.PostAsync("https://tradingstoreapi.ngrok.app/verifyDLL", content).Result;
+
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    Print("DLL accepted"); //After verifying the DLLs, you can safely use them to authorize your customers.
+                    return true;
+                }
+                else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    Print("DLL has been tampered with.");
+                    return false;
+                }
+                else
+                {
+                    Print($"Error: {response.StatusCode}");
+                    return false;
+                }
+            }
+        }
+	
+		
+        protected override void OnBarUpdate()
+        {
+            // We call our hasPermission method here
+            if (hasPermission()){
+		Print("User does not have permission!");
+                return; // VERY IMPORTANT: Be sure to handle the case for when a user doesn't have access. In this example, we simply return to terminate the method before any indicator logic ensues.
+            }
+            //Add your custom indicator logic here...
+        }
+		
     }
 }
+
 ```
-
-Please make sure that the end user knows to copy the TAS_DotNet and Utils_DotNet DLLs into the Documents\NinjaTrader\bin\custom folder as well or else your application will throw an error.
-
-
-
 
 ## DLL Return Values
 The DLL will return various error values based on numerous factors. It is up to your application how to handle them.
