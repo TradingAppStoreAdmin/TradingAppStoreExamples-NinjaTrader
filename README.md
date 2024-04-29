@@ -55,7 +55,7 @@ The DLL must have 3 input values:
 * bool debug :          set to True if you are testing to use Debug licenses distributed by the vendor portal. SET TO FALSE FOR RELEASE OR ELSE ANYONE WILL HAVE ACCESS TO YOUR PRODUCT
 
 ## Implementation
-The following is an example implementation that halts the OnBarUpdate() event of an indicator in the case that the user does not have permission.
+The following is an example implementation that halts the OnBarUpdate() event of an indicator in the case that the user does not have a valid subscription to the indicator.
 ```C#
 // these using statements support our dll import and assembly import logic
 using System.Reflection;
