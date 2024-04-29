@@ -71,7 +71,7 @@ namespace NinjaTrader.NinjaScript.Indicators
             // onStateChange logic...
         }
 	
-        // Import our DLL for	
+        // Import method used to check if the current user has access to the program
 	[DllImport("C:\\ProgramData\\TradingAppStore\\x64\\TASlicense.dll")]
         static extern int UsePlatformAuthorization(string customerId, string productId, bool debug);
 
@@ -79,6 +79,8 @@ namespace NinjaTrader.NinjaScript.Indicators
         private static bool ran = false;
 	// caching the result of hasPermission() after first run
         private static bool verified = false;
+        
+        // helper method that returns whether or not user authentication was successful. Called from OnBarUpdate()
         private bool hasPermission()
         {
 	    // if we already ran, return our cached result
@@ -115,7 +117,8 @@ namespace NinjaTrader.NinjaScript.Indicators
                 return false;
             }
         }
-		
+	
+        // helper method called by hasPermission() that returns whether or not the dlls are up to date and have not been tampered with.
         private bool VerifyDlls()
         {
             //This gets a one-time-use magic number from a utility dll
@@ -145,17 +148,16 @@ namespace NinjaTrader.NinjaScript.Indicators
             }
         }
 	
-		
+	// indicator event. We cut off the logic in the case that the auth failed	
         protected override void OnBarUpdate()
         {
             // We call our hasPermission method here
             if (hasPermission()){
 		Print("User does not have permission!");
-                return; // VERY IMPORTANT: Be sure to handle the case for when a user doesn't have access. In this example, we simply return to terminate the method before any indicator logic ensues.
+                return; // VERY IMPORTANT: Be sure to handle the case for when a user doesn't have access. In this example, we simply return to terminate the method before any further indicator logic ensues.
             }
             //Add your custom indicator logic here...
         }
-		
     }
 }
 
