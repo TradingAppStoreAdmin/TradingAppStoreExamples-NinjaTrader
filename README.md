@@ -71,35 +71,32 @@ namespace NinjaTrader.NinjaScript.Indicators
             // onStateChange logic...
         }
 	
-        // Import method used to check if the current user has access to the program
-	[DllImport("C:\\ProgramData\\TradingAppStore\\x64\\TASlicense.dll")]
+		// Import method used to check if the current user has access to the program
+		[DllImport("C:\\ProgramData\\TradingAppStore\\x64\\TASlicense.dll")]
         private static extern int UseMachineAuthorization(string productId, bool debug);
 
         // whether we ran hasPermission() yet or not
         private static bool ran = false;
-	// caching the result of hasPermission() after first run
+		// caching the result of hasPermission() after first run
         private static bool verified = false;
         
         // helper method that returns whether or not user authentication was successful. Called from OnBarUpdate()
         private bool hasPermission()
         {
 	    // if we already ran, return our cached result
-            if (ran)
-            {
-                return verified;
+            if (ran){
+               return verified;
             }
             ran = true;
 
-            //Before you use the dlls, you should first make sure that they have not
-            //  been tampered with.
-	    if (!VerifyDlls())
-            {
-	        Print("DLLs denied");
+            //Before you use the dlls, you should first make sure that they have not been tampered with.
+	    if (!VerifyDlls()){
+		Print("DLLs denied");
                 return false; // VERY IMPORTANT: Handle the case for if either verification fails. Do not use the library code! In this example, we simply return to terminate the program.
             }
             
             // set this to your product sku
-            string productID = "INSERT_PRODUCT_SKU";
+            string productID = "Grant_CSecurityTest";
             bool debug = true; // VERY IMPORTANT: Only set this to true during testing. Actual implementation will have debug set to false.
 
             //Perform user authentication using TAS authorization
@@ -121,7 +118,7 @@ namespace NinjaTrader.NinjaScript.Indicators
         private bool VerifyDlls()
         {
             //This gets a one-time-use magic number from a utility dll
-	    string magicNumber = (string)Assembly.LoadFrom(@"C:\ProgramData\TradingAppStore\x64\Utils_DotNet.dll").GetType("Utils").GetMethod("ReceiveMagicNumber", BindingFlags.Static | BindingFlags.Public, null, CallingConventions.Any, Type.EmptyTypes, null).Invoke(null, null).ToString();
+	    string magicNumber = (string)Assembly.LoadFrom(@"C:\ProgramData\TradingAppStore\x64\Utils_DotNet.dll").GetType("Utils").GetMethod("ReceiveMagicNumber", BindingFlags.Static | BindingFlags.Public, null, CallingConventions.Any, Type.EmptyTypes, 	null).Invoke(null, null).ToString();
             var jsonString = "{\"magic_number\" : \"" + magicNumber + "\"}";
             //Now, let's send that magic number to our server to be verified
             using (var client = new HttpClient())
@@ -151,7 +148,7 @@ namespace NinjaTrader.NinjaScript.Indicators
         protected override void OnBarUpdate()
         {
             // We call our hasPermission method here
-            if (hasPermission()){
+            if (!hasPermission()){
 		Print("User does not have permission!");
                 return; // VERY IMPORTANT: Be sure to handle the case for when a user doesn't have access. In this example, we simply return to terminate the method before any further indicator logic ensues.
             }
