@@ -71,8 +71,8 @@ namespace NinjaTrader.NinjaScript.Indicators
             // onStateChange logic...
         }
 	
-		// Import method used to check if the current user has access to the program
-		[DllImport("C:\\ProgramData\\TradingAppStore\\x64\\TASlicense.dll")]
+        // Import method used to check if the current user has access to the program
+        [DllImport("C:\\ProgramData\\TradingAppStore\\x64\\TASlicense.dll")]
         private static extern int UseMachineAuthorization(string productId, bool debug);
 
         // whether we ran hasPermission() yet or not
