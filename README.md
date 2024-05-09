@@ -73,7 +73,7 @@ namespace NinjaTrader.NinjaScript.Indicators
 	
         // Import method used to check if the current user has access to the program
 	[DllImport("C:\\ProgramData\\TradingAppStore\\x64\\TASlicense.dll")]
-        static extern int UsePlatformAuthorization(string customerId, string productId, bool debug);
+        private static extern int UseMachineAuthorization(string productId, bool debug);
 
         // whether we ran hasPermission() yet or not
         private static bool ran = false;
@@ -98,13 +98,12 @@ namespace NinjaTrader.NinjaScript.Indicators
                 return false; // VERY IMPORTANT: Handle the case for if either verification fails. Do not use the library code! In this example, we simply return to terminate the program.
             }
             
-            // set these to your product sku and the customer ninjatraderId respectively
+            // set this to your product sku
             string productID = "INSERT_PRODUCT_SKU";
-            string customerID = "NinjaTrader-" + "INSERT_CUSTOMER_ID";
             bool debug = true; // VERY IMPORTANT: Only set this to true during testing. Actual implementation will have debug set to false.
 
             //Perform user authentication using TAS authorization
-            int error_platform_auth = UsePlatformAuthorization(productID, productID, debug);
+            int error_platform_auth = UseMachineAuthorization(productID, debug);
 
             if (error_platform_auth == 0)
             {
