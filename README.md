@@ -100,9 +100,9 @@ namespace NinjaTrader.NinjaScript.Indicators
             bool debug = true; // VERY IMPORTANT: Only set this to true during testing. Actual implementation will have debug set to false.
 
             //Perform user authentication using TAS authorization
-            int error_platform_auth = UseMachineAuthorization(productID, debug);
+            int error_machine_auth = UseMachineAuthorization(productID, debug);
 
-            if (error_platform_auth == 0)
+            if (error_machine_auth == 0)
             {
                 verified = true;
                 return true;
