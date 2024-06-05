@@ -55,7 +55,7 @@ The DLL must have 3 input values:
 * bool debug :          set to True if you are testing to use Debug licenses distributed by the vendor portal. SET TO FALSE FOR RELEASE OR ELSE ANYONE WILL HAVE ACCESS TO YOUR PRODUCT
 
 ## Implementation
-The following is an example implementation that halts the OnBarUpdate() event of an indicator in the case that the user does not have a valid subscription to the indicator.
+The following is an example implementation that halts the OnBarUpdate() event of an indicator in the case that the user does not have a valid subscription to the indicator. Please review it carefully.
 ```C#
 // these using statements support our dll import and assembly import logic
 using System.Reflection;
@@ -96,7 +96,7 @@ namespace NinjaTrader.NinjaScript.Indicators
             }
             
             // set this to your product sku
-            string productID = "Grant_CSecurityTest";
+            string productID = "INSERT_PRODUCT_ID_HERE";
             bool debug = true; // VERY IMPORTANT: Only set this to true during testing. Actual implementation will have debug set to false.
 
             //Perform user authentication using TAS authorization
@@ -114,11 +114,18 @@ namespace NinjaTrader.NinjaScript.Indicators
             }
         }
 	
+	[DllImport("C:\\ProgramData\\TradingAppStore\\x64\\Utils.dll")]
+	private static extern string GetMagicNumber();
         // helper method called by hasPermission() that returns whether or not the dlls are up to date and have not been tampered with.
         private bool VerifyDlls()
         {
-            //This gets a one-time-use magic number from a utility dll
-	    string magicNumber = (string)Assembly.LoadFrom(@"C:\ProgramData\TradingAppStore\x64\Utils_DotNet.dll").GetType("Utils").GetMethod("ReceiveMagicNumber", BindingFlags.Static | BindingFlags.Public, null, CallingConventions.Any, Type.EmptyTypes, 	null).Invoke(null, null).ToString();
+	    //This gets a one-time-use magic number from a utility dll
+            GetMagicNumber();
+	    string magicNumber = "";
+	    using (StreamReader s = new StreamReader("C:\\ProgramData\\TradingAppStore\\temp\\magic.txt"))
+	    {
+		magicNumber = s.ReadToEnd();
+	    }
             var jsonString = "{\"magic_number\" : \"" + magicNumber + "\"}";
             //Now, let's send that magic number to our server to be verified
             using (var client = new HttpClient())
