@@ -96,7 +96,7 @@ namespace NinjaTrader.NinjaScript.Indicators
             }
             
             // set this to your product sku
-            string productID = "INSERT_PRODUCT_ID_HERE";
+            string productID = "INSERT_PRODUCT_SKU";
             bool debug = true; // VERY IMPORTANT: Only set this to true during testing. Actual implementation will have debug set to false.
 
             //Perform user authentication using TAS authorization
