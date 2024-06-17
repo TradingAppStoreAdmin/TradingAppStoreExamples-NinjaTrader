@@ -195,7 +195,9 @@ This is the price per period for the subscription term of the product.  Revenue 
 Click here to send this listing for approval by TAS site moderators.  You will be notified by email upon acceptance or rejection.
 
 ## Other Notes
-If you are planning on using other apps sold from TradingApp.Store as an end-user, you must first uninstall the vendor installation of the TAS License Manager using Windows 'Add or Remove Programs' in Settings and then install the MSI received at the time of purchase.  We are currently working on building a dual-mode License Manager, so for now, you have to either work with two computers, or uninstall/reinstall if you want to switch from vendor-mode to end-user mode.
+The TradingApp.Store License Manager has the ability to switch between ‘End-User’ mode, and ‘Vendor Test Mode’ by-way of a checkbox at the top right of the TAS Lisence Manager labeled:  ‘Vendor Test Mode’.
+When it's checked, only Vendor's products show in License Manager’s DataGrids, when unchecked, only End-User products show in DataGrids.
+If a Vendor is also an End-User of other’s products, they must use the same email address during registrations for each mode for this to work.  This enables one installation of this License Manager to handle both integration testing while in Vendor Mode, and alternatively using End-User mode for purchased products use.
 
 ## Further Help
 If you need assistance in implementation, you may email support@tradingapp.store and we will respond as quickly as possible.
